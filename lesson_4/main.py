@@ -24,7 +24,7 @@ async def send_image(message: types.Message):
 #отправляет картинку в чат или в личку
 
 @dp.message_handler(commands=['местоположение'])
-async def send_image(message: types.Message):
+async def send_poin(message: types.Message):
     await bot.send_location(chat_id=message.from_user.id, latitude=65,longitude=45 )
     await message.delete()
 #отправляет местоположение по заданным координатам
