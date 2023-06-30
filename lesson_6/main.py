@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup,ReplyKeyboardMarkup, KeyboardButton
 
 
 TOKEN_API = "6181318829:AAEunNJz8JCNwOAb0UBRabRAmvkHjm74LEo"
@@ -7,20 +7,35 @@ TOKEN_API = "6181318829:AAEunNJz8JCNwOAb0UBRabRAmvkHjm74LEo"
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
-ikb = InlineKeyboardMarkup(row_width=2)
-ib1 = InlineKeyboardButton(text='Button_1', url='https://www.youtube.com/watch?v=5_EHfHbzUCo&list=PLe-iIMbo5JOJm6DRTjhleHojroS-Bbocr&index=11')
-ib2 = InlineKeyboardButton(text='Button_2', url='https://www.youtube.com/watch?v=Y4_7OLiLRBg')
+kb = ReplyKeyboardMarkup(resize_keyboard=True)
+b1 = KeyboardButton(text='/help')
+b2 = KeyboardButton(text='/vote')
 
-ikb.add(ib1,ib2)
+kb.add(b1,b2)
 
-@dp.message_handler(commands=['старт'])
+@dp.message_handler(commands=['start'])
 async def start_commands(message: types.Message):
-        await message.answer(text='Привет я телеграмм Бот!', reply_markup=ikb)
+        await message.answer(text='Привет я телеграмм Бот!', reply_markup=kb)
         await message.delete()
 
+@dp.message_handler(commands=['vote'])
+async def start_commands(message: types.Message):
 
+    ikb = InlineKeyboardMarkup(row_width=2)
+    ib1 = InlineKeyboardButton(text='❤️',callback_data='Like')
+    id2 = InlineKeyboardButton(text='👎', callback_data='Dislike')
+    ikb.add(ib1,id2)
 
+    await bot.send_photo(chat_id=message.from_user.id,
+                               photo='https://static-cse.canva.com/blob/847132/paulskorupskas7KLaxLbSXAunsplash2.jpg',
+                               caption='Нравиться фото?',
+                               reply_markup=ikb)
 
+@dp.callback_query_handler()
+async def vote_call_back(callback: types.CallbackQuery):
+    if callback.data =='Like':
+        await callback.answer(text='Ты лайкнул')
+    await callback.answer('Ты дизлайкнул')
 
 
 
